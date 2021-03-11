@@ -3,24 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:timeline_tile/timeline_tile.dart';
 import 'package:task/network.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
-
-// Future<http.Response> postRequest() async {
-//   var url = 'my-notary-app.herokuapp.com';
-//   var body = {
-//     "notary": "60280100a063a42fb456c252",
-//     "today12am": "2021-03-01 00:00:00 GMT+0530",
-//     "order":"603768d4c54c430015c9bdb7"
-//   };
-//
-//   var response = await http.post(Uri.https(url, '/getNotaryHomepage'),
-//       body: body
-//   );
-//   print("${response.statusCode}");
-//   print("${response.body}");
-//   return response;
-// }
 
 class OrderPage extends StatefulWidget {
   @override
@@ -35,6 +17,7 @@ class _OrderPageState extends State<OrderPage> {
       title: 'Order Details',
       home: SafeArea(
         child: Scaffold(
+          backgroundColor: Colors.white,
           appBar: AppBar(
             leading: new IconButton(
               icon: new Icon(Icons.arrow_back_ios, color: Colors.black),
@@ -110,7 +93,7 @@ class _OrderPageState extends State<OrderPage> {
               Container(
                 alignment: Alignment.topLeft,
                 height: 40.0,
-                width: 300.0,
+                width: MediaQuery.of(context).size.width,
                 child: DefaultTabController(
                   length: 4,
                   child: TabBar(

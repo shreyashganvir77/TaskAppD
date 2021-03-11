@@ -13,8 +13,7 @@ List<Widget> appointmentList = [
   CustomCard(),
 ];
 
-
-void main(){
+void main() {
   runApp(MyApp());
 }
 
@@ -26,6 +25,7 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   var result;
   bool _loading = true;
+  int _index = 0;
   @override
   void initState() {
     Network().postRequest().then((response) {
@@ -36,155 +36,171 @@ class _MyAppState extends State<MyApp> {
     });
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
-    return _loading == true ? LoadingScreen() : MaterialApp(
-      color: Colors.white,
-      home: Scaffold(
-        resizeToAvoidBottomInset: true,
-        bottomNavigationBar: Padding(
-          padding: const EdgeInsets.only(top: 10.0, right: 10.0, bottom: 2.0, left: 10.0),
-          child: Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(20.0),
-              border: Border.all(
-                color: Colors.black26
-              )
-            ),
-            child: GNav(
-                rippleColor: Colors.grey[800],
-                hoverColor: Colors.grey[700],
-                haptic: true,
-                tabBorderRadius: 20,
-                curve: Curves.easeOutExpo,
-                duration: Duration(milliseconds: 900),
-                gap: 8,
-                color: Colors.black,
-                activeColor: Colors.blueAccent,
-                iconSize: 30,
-                tabBackgroundColor: Colors.blue[100],
-                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-                tabs: [
-              GButton(
-                icon: Icons.home,
-                text: 'Home',
-              ),
-              GButton(
-                icon: Icons.event_note,
-                text: 'Notes',
-              ),
-              GButton(
-                icon: FontAwesomeIcons.commentDollar,
-                iconSize: 20.0,
-                text: 'Search',
-              ),
-              GButton(
-                icon: Icons.perm_identity_rounded,
-                text: 'Profile',
-              ),
-            ]),
-          ),
-        ),
-        body: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.all(12.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Good Morning,',
-                  style: GoogleFonts.roboto(
-                    fontSize: 16.0,
-                    fontWeight: FontWeight.w400,
+    return _loading == true
+        ? LoadingScreen()
+        : MaterialApp(
+            color: Colors.white,
+            home: Scaffold(
+              resizeToAvoidBottomInset: true,
+              bottomNavigationBar: Padding(
+                padding: const EdgeInsets.only(
+                    top: 10.0, right: 10.0, bottom: 2.0, left: 10.0),
+                child: Container(
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20.0),
+                      border: Border.all(color: Colors.black26)),
+                  child: GNav(
+                    selectedIndex: _index,
+                    rippleColor: Colors.grey[800],
+                    hoverColor: Colors.grey[700],
+                    haptic: true,
+                    tabBorderRadius: 20,
+                    curve: Curves.easeOutExpo,
+                    duration: Duration(milliseconds: 900),
+                    gap: 8,
                     color: Colors.black,
+                    activeColor: Colors.blueAccent,
+                    iconSize: 30,
+                    tabBackgroundColor: Colors.blue[100],
+                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                    tabs: [
+                      GButton(
+                        icon: Icons.home,
+                        text: 'Home',
+                        active: true,
+                        onPressed: () {},
+                      ),
+                      GButton(
+                        icon: Icons.event_note,
+                        text: 'Notes',
+                        active: true,
+                        onPressed: () {},
+                      ),
+                      GButton(
+                        icon: FontAwesomeIcons.commentDollar,
+                        text: 'Currency',
+                        onPressed: () {},
+                      ),
+                      GButton(
+                        icon: Icons.perm_identity_rounded,
+                        text: 'Profile',
+                        onPressed: () {},
+                      ),
+                    ],
+                    onTabChange: (index){
+                      setState(() {
+                        _index = index;
+                      });
+                    },
                   ),
                 ),
-                SizedBox(
-                  height: 10.0,
-                ),
-                Text(
-                  'Jennifer',
-                  style: GoogleFonts.roboto(
-                    fontSize: 24.0,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.black,
-                  ),
-                ),
-                SizedBox(
-                  height: 10.0,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      "Today's Appointment",
-                      style: GoogleFonts.roboto(
-                        fontSize: 15.0,
-                        fontWeight: FontWeight.w700,
-                        color: Colors.black,
-                      ),
-                    ),
-                    Text(
-                      "View All",
-                      style: GoogleFonts.roboto(
-                        fontSize: 15.0,
-                        fontWeight: FontWeight.w700,
-                        color: Colors.black,
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(
-                  height: 10.0,
-                ),
-                SizedBox(
-                  height: 165.0,
-                  child: ListView(
-                    shrinkWrap: true,
-                    scrollDirection: Axis.horizontal,
+              ),
+              body: SafeArea(
+                child: Padding(
+                  padding: const EdgeInsets.all(12.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      CustomCard(name: Appointment().signerFullName , time: Appointment().time,),
-                      CustomCard(),
+                      Text(
+                        'Good Morning,',
+                        style: GoogleFonts.roboto(
+                          fontSize: 16.0,
+                          fontWeight: FontWeight.w400,
+                          color: Colors.black,
+                        ),
+                      ),
+                      SizedBox(
+                        height: 10.0,
+                      ),
+                      Text(
+                        'Jennifer',
+                        style: GoogleFonts.roboto(
+                          fontSize: 24.0,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.black,
+                        ),
+                      ),
+                      SizedBox(
+                        height: 10.0,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "Today's Appointment",
+                            style: GoogleFonts.roboto(
+                              fontSize: 15.0,
+                              fontWeight: FontWeight.w700,
+                              color: Colors.black,
+                            ),
+                          ),
+                          Text(
+                            "View All",
+                            style: GoogleFonts.roboto(
+                              fontSize: 15.0,
+                              fontWeight: FontWeight.w700,
+                              color: Colors.black,
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(
+                        height: 10.0,
+                      ),
+                      SizedBox(
+                        height: 165.0,
+                        child: ListView(
+                          shrinkWrap: true,
+                          scrollDirection: Axis.horizontal,
+                          children: [
+                            CustomCard(
+                              name: Appointment().signerFullName,
+                              time: Appointment().time,
+                            ),
+                            CustomCard(),
+                          ],
+                        ),
+                      ),
+                      SizedBox(
+                        height: 10.0,
+                      ),
+                      Text(
+                        "Pending Requests",
+                        style: GoogleFonts.roboto(
+                          fontSize: 15.0,
+                          fontWeight: FontWeight.w700,
+                          color: Colors.black,
+                        ),
+                      ),
+                      SizedBox(
+                        height: 3.0,
+                      ),
+                      Text(
+                        "Accept the order as soon it comes. Orders are assigned on first acceptance basis",
+                        style: GoogleFonts.roboto(
+                          fontSize: 15.0,
+                          fontWeight: FontWeight.w400,
+                          color: Colors.grey,
+                        ),
+                      ),
+                      Expanded(
+                        child: ListView(
+                          shrinkWrap: true,
+                          children: [
+                            CustomCardAD(),
+                            CustomCardAD(),
+                          ],
+                        ),
+                      )
                     ],
                   ),
                 ),
-                SizedBox(
-                  height: 10.0,
-                ),
-                Text(
-                  "Pending Requests",
-                  style: GoogleFonts.roboto(
-                    fontSize: 15.0,
-                    fontWeight: FontWeight.w700,
-                    color: Colors.black,
-                  ),
-                ),
-                SizedBox(
-                  height: 3.0,
-                ),
-                Text(
-                  "Accept the order as soon it comes. Orders are assigned on first acceptance basis",
-                  style: GoogleFonts.roboto(
-                    fontSize: 15.0,
-                    fontWeight: FontWeight.w400,
-                    color: Colors.grey,
-                  ),
-                ),
-                Expanded(
-                  child: ListView(
-                    shrinkWrap: true,
-                    children: [
-                      CustomCardAD(),
-                      CustomCardAD(),
-                    ],
-                  ),
-                )
-              ],
+              ),
             ),
-          ),
-        ),
-      ),
-    );
+          );
   }
 }
 
@@ -195,9 +211,14 @@ class CustomCardAD extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return  GestureDetector(
-      onTap: (){
-        Navigator.push(context, MaterialPageRoute(builder: (context)=>OrderPage(),),);
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => OrderPage(),
+          ),
+        );
       },
       child: Stack(
         children: [
@@ -252,8 +273,8 @@ class CustomCardAD extends StatelessWidget {
                       ),
                     ),
                     Padding(
-                      padding:
-                          const EdgeInsets.only(top: 8.0, left: 8.0, right: 8.0),
+                      padding: const EdgeInsets.only(
+                          top: 8.0, left: 8.0, right: 8.0),
                       child: Container(
                         height: 1.0,
                         width: double.infinity,
@@ -326,11 +347,13 @@ class CustomCard extends StatelessWidget {
   final String time;
 
   const CustomCard({
-    Key key, this.name, this.time,
+    Key key,
+    this.name,
+    this.time,
   }) : super(key: key);
 
   @override
-  Widget build(BuildContext context){
+  Widget build(BuildContext context) {
     return Stack(
       children: [
         Container(
@@ -359,7 +382,7 @@ class CustomCard extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                               (name == null) ? 'Martin Lawrence' : name,
+                              (name == null) ? 'Martin Lawrence' : name,
                               style: GoogleFonts.roboto(
                                 fontSize: 20.0,
                                 fontWeight: FontWeight.w400,
