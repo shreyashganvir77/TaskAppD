@@ -57,12 +57,6 @@ class _OrderPageState extends State<OrderPage> {
                   FlatButton(
                     onPressed: () async {
                       var response = await Network().postRequest();
-                      int result = response.statusCode;
-                      if(result == 200){
-                        print('completed');
-                      }else{
-                        print('error');
-                      }
                     },
                     color: Colors.blue[900],
                     shape: RoundedRectangleBorder(

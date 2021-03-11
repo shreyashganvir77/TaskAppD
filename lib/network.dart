@@ -1,7 +1,8 @@
 import 'package:http/http.dart' as http;
+import 'package:task/apiData.dart';
 
 class Network {
-  Future<http.Response> postRequest() async {
+  Future<HomePageData> postRequest() async {
     var url = 'my-notary-app.herokuapp.com';
     var body = {
       "notary": "60280100a063a42fb456c252",
@@ -14,7 +15,10 @@ class Network {
       );
       if(response.statusCode == 200){
         print("completed");
-        return response;
+        print(response.body);
+        var result = response.body;
+        HomePageData homePageData = homePageDataFromJson(result);
+        return homePageData;
       } else{
         return null;
       }

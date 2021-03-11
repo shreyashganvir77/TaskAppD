@@ -23,14 +23,14 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  var result;
+  HomePageData result;
   bool _loading = true;
   int _index = 0;
   @override
   void initState() {
     Network().postRequest().then((response) {
-      result = response;
       setState(() {
+        result = response;
         _loading = false;
       });
     });
@@ -90,7 +90,7 @@ class _MyAppState extends State<MyApp> {
                         onPressed: () {},
                       ),
                     ],
-                    onTabChange: (index){
+                    onTabChange: (index) {
                       setState(() {
                         _index = index;
                       });
@@ -152,16 +152,17 @@ class _MyAppState extends State<MyApp> {
                       ),
                       SizedBox(
                         height: 165.0,
-                        child: ListView(
+                        child: ListView.builder(
                           shrinkWrap: true,
                           scrollDirection: Axis.horizontal,
-                          children: [
-                            CustomCard(
-                              name: Appointment().signerFullName,
-                              time: Appointment().time,
-                            ),
-                            CustomCard(),
-                          ],
+                          itemCount: result.appointments.length,
+                          itemBuilder: (context, index) {
+                            return CustomCard(
+                              name: result.appointments[index].appointment
+                                  .signerFullName,
+                              time: result.appointments[index].appointment.date,
+                            );
+                          },
                         ),
                       ),
                       SizedBox(
@@ -390,7 +391,9 @@ class CustomCard extends StatelessWidget {
                               ),
                             ),
                             Text(
-                              (time == null) ? '10:30 AM' : time,
+                              (time == null)
+                                  ? '10:30 AM'
+                                  : time.substring(15, 21) +  (int.parse(time.substring(15, 17)) > 12 ? ' PM' : ' AM'),
                               style: GoogleFonts.roboto(
                                 fontSize: 20.0,
                                 fontWeight: FontWeight.w400,
