@@ -73,7 +73,7 @@ class _OrderPageState extends State<OrderPage> {
                   ),
                   FlatButton(
                     onPressed: () async {
-                      var response = await postRequest();
+                      var response = await Network().postRequest();
                       int result = response.statusCode;
                       if(result == 200){
                         print('completed');

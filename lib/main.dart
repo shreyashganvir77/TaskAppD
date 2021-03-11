@@ -5,25 +5,16 @@ import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:task/network.dart';
 import 'orderPage.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:task/apiData.dart';
 
 List<Widget> appointmentList = [
   CustomCard(),
   CustomCard(),
 ];
 
-String resultBody;
-String name;
-String time;
-final appointmentData = Appointment();
 
-void main() async {
-  await postRequest();
-  name = Notary().firstName;
-  print(name);
-  time = appointmentData.time;
-  print(time);
+void main(){
   runApp(MyApp());
 }
 
@@ -33,10 +24,21 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-
+  var result;
+  bool _loading = true;
+  @override
+  void initState() {
+    Network().postRequest().then((response) {
+      result = response;
+      setState(() {
+        _loading = false;
+      });
+    });
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return _loading == true ? LoadingScreen() : MaterialApp(
       color: Colors.white,
       home: Scaffold(
         resizeToAvoidBottomInset: true,
@@ -141,7 +143,7 @@ class _MyAppState extends State<MyApp> {
                     shrinkWrap: true,
                     scrollDirection: Axis.horizontal,
                     children: [
-                      CustomCard(name: name, time: time,),
+                      CustomCard(name: Appointment().signerFullName , time: Appointment().time,),
                       CustomCard(),
                     ],
                   ),
@@ -193,7 +195,7 @@ class CustomCardAD extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    return  GestureDetector(
       onTap: (){
         Navigator.push(context, MaterialPageRoute(builder: (context)=>OrderPage(),),);
       },
@@ -440,6 +442,24 @@ class CustomCard extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+class LoadingScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: Scaffold(
+        body: Center(
+          child: Container(
+            child: SpinKitRotatingCircle(
+              color: Colors.blue,
+              size: 50.0,
+            ),
+          ),
+        ),
+      ),
     );
   }
 }
