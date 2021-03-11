@@ -1,0 +1,445 @@
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:google_nav_bar/google_nav_bar.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:task/network.dart';
+import 'orderPage.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+
+List<Widget> appointmentList = [
+  CustomCard(),
+  CustomCard(),
+];
+
+String resultBody;
+String name;
+String time;
+final appointmentData = Appointment();
+
+void main() async {
+  await postRequest();
+  name = Notary().firstName;
+  print(name);
+  time = appointmentData.time;
+  print(time);
+  runApp(MyApp());
+}
+
+class MyApp extends StatefulWidget {
+  @override
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      color: Colors.white,
+      home: Scaffold(
+        resizeToAvoidBottomInset: true,
+        bottomNavigationBar: Padding(
+          padding: const EdgeInsets.only(top: 10.0, right: 10.0, bottom: 2.0, left: 10.0),
+          child: Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20.0),
+              border: Border.all(
+                color: Colors.black26
+              )
+            ),
+            child: GNav(
+                rippleColor: Colors.grey[800],
+                hoverColor: Colors.grey[700],
+                haptic: true,
+                tabBorderRadius: 20,
+                curve: Curves.easeOutExpo,
+                duration: Duration(milliseconds: 900),
+                gap: 8,
+                color: Colors.black,
+                activeColor: Colors.blueAccent,
+                iconSize: 30,
+                tabBackgroundColor: Colors.blue[100],
+                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                tabs: [
+              GButton(
+                icon: Icons.home,
+                text: 'Home',
+              ),
+              GButton(
+                icon: Icons.event_note,
+                text: 'Notes',
+              ),
+              GButton(
+                icon: FontAwesomeIcons.commentDollar,
+                iconSize: 20.0,
+                text: 'Search',
+              ),
+              GButton(
+                icon: Icons.perm_identity_rounded,
+                text: 'Profile',
+              ),
+            ]),
+          ),
+        ),
+        body: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.all(12.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Good Morning,',
+                  style: GoogleFonts.roboto(
+                    fontSize: 16.0,
+                    fontWeight: FontWeight.w400,
+                    color: Colors.black,
+                  ),
+                ),
+                SizedBox(
+                  height: 10.0,
+                ),
+                Text(
+                  'Jennifer',
+                  style: GoogleFonts.roboto(
+                    fontSize: 24.0,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.black,
+                  ),
+                ),
+                SizedBox(
+                  height: 10.0,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      "Today's Appointment",
+                      style: GoogleFonts.roboto(
+                        fontSize: 15.0,
+                        fontWeight: FontWeight.w700,
+                        color: Colors.black,
+                      ),
+                    ),
+                    Text(
+                      "View All",
+                      style: GoogleFonts.roboto(
+                        fontSize: 15.0,
+                        fontWeight: FontWeight.w700,
+                        color: Colors.black,
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(
+                  height: 10.0,
+                ),
+                SizedBox(
+                  height: 165.0,
+                  child: ListView(
+                    shrinkWrap: true,
+                    scrollDirection: Axis.horizontal,
+                    children: [
+                      CustomCard(name: name, time: time,),
+                      CustomCard(),
+                    ],
+                  ),
+                ),
+                SizedBox(
+                  height: 10.0,
+                ),
+                Text(
+                  "Pending Requests",
+                  style: GoogleFonts.roboto(
+                    fontSize: 15.0,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.black,
+                  ),
+                ),
+                SizedBox(
+                  height: 3.0,
+                ),
+                Text(
+                  "Accept the order as soon it comes. Orders are assigned on first acceptance basis",
+                  style: GoogleFonts.roboto(
+                    fontSize: 15.0,
+                    fontWeight: FontWeight.w400,
+                    color: Colors.grey,
+                  ),
+                ),
+                Expanded(
+                  child: ListView(
+                    shrinkWrap: true,
+                    children: [
+                      CustomCardAD(),
+                      CustomCardAD(),
+                    ],
+                  ),
+                )
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class CustomCardAD extends StatelessWidget {
+  const CustomCardAD({
+    Key key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: (){
+        Navigator.push(context, MaterialPageRoute(builder: (context)=>OrderPage(),),);
+      },
+      child: Stack(
+        children: [
+          Container(
+            height: 170.0,
+            width: 380.0,
+            child: Card(
+                elevation: 3.0,
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(left: 8.0, top: 14.0),
+                      child: Row(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(top: 4.0),
+                            child: CircleAvatar(
+                              backgroundImage:
+                                  AssetImage('assets/images/martin.webp'),
+                              radius: 30.0,
+                            ),
+                          ),
+                          SizedBox(
+                            width: 10.0,
+                          ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Container(
+                                width: 230.0,
+                                child: Text(
+                                  'Refinance of Martin Lawrence of the jtha',
+                                  overflow: TextOverflow.ellipsis,
+                                  style: GoogleFonts.roboto(
+                                    fontSize: 18.0,
+                                    fontWeight: FontWeight.w400,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                              ),
+                              Text(
+                                'A short description of order\nwith some short text',
+                                style: GoogleFonts.roboto(
+                                  fontSize: 16.0,
+                                  fontWeight: FontWeight.w400,
+                                  color: Colors.grey,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                    Padding(
+                      padding:
+                          const EdgeInsets.only(top: 8.0, left: 8.0, right: 8.0),
+                      child: Container(
+                        height: 1.0,
+                        width: double.infinity,
+                        color: Colors.grey,
+                      ),
+                    ),
+                    SizedBox(
+                      height: 5.0,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        FlatButton(
+                          onPressed: () {},
+                          color: Colors.yellow[400],
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10.0),
+                          ),
+                          child: Text(
+                            'Decline',
+                            style: GoogleFonts.roboto(
+                              fontSize: 15.0,
+                              fontWeight: FontWeight.w400,
+                              color: Colors.black,
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          width: 15.0,
+                        ),
+                        FlatButton(
+                          onPressed: () {},
+                          color: Colors.blue[900],
+                          child: Text(
+                            'Accept',
+                            style: GoogleFonts.roboto(
+                              fontSize: 15.0,
+                              fontWeight: FontWeight.w400,
+                              color: Colors.white,
+                            ),
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10.0),
+                          ),
+                        ),
+                      ],
+                    )
+                  ],
+                )),
+          ),
+          Positioned(
+              top: 40.0,
+              right: 15.0,
+              child: Text(
+                "₹ 125",
+                style: GoogleFonts.roboto(
+                  fontWeight: FontWeight.w800,
+                  fontSize: 27.0,
+                  color: Colors.black,
+                ),
+              )),
+        ],
+      ),
+    );
+  }
+}
+
+class CustomCard extends StatelessWidget {
+  final String name;
+  final String time;
+
+  const CustomCard({
+    Key key, this.name, this.time,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context){
+    return Stack(
+      children: [
+        Container(
+          height: 170.0,
+          width: 320.0,
+          child: Card(
+              elevation: 5.0,
+              child: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(left: 8.0, top: 8.0),
+                    child: Row(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(top: 14.0),
+                          child: CircleAvatar(
+                            backgroundImage:
+                                AssetImage('assets/images/martin.webp'),
+                            radius: 30.0,
+                          ),
+                        ),
+                        SizedBox(
+                          width: 10.0,
+                        ),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                               (name == null) ? 'Martin Lawrence' : name,
+                              style: GoogleFonts.roboto(
+                                fontSize: 20.0,
+                                fontWeight: FontWeight.w400,
+                                color: Colors.black,
+                              ),
+                            ),
+                            Text(
+                              (time == null) ? '10:30 AM' : time,
+                              style: GoogleFonts.roboto(
+                                fontSize: 20.0,
+                                fontWeight: FontWeight.w400,
+                                color: Colors.black,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding:
+                        const EdgeInsets.only(top: 8.0, left: 8.0, right: 8.0),
+                    child: Container(
+                      height: 1.0,
+                      width: double.infinity,
+                      color: Colors.grey,
+                    ),
+                  ),
+                  SizedBox(
+                    height: 5.0,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(
+                        left: 18.0, right: 18.0, bottom: 18.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Status',
+                              style: GoogleFonts.roboto(
+                                fontWeight: FontWeight.w600,
+                                fontSize: 15.0,
+                                color: Colors.grey,
+                              ),
+                            ),
+                            Text(
+                              'Arrived at Appointment',
+                              style: GoogleFonts.roboto(
+                                fontWeight: FontWeight.w600,
+                                fontSize: 15.0,
+                                color: Colors.black,
+                              ),
+                            ),
+                          ],
+                        ),
+                        Text(
+                          'Update\nStatus',
+                          style: GoogleFonts.roboto(
+                            fontSize: 16.0,
+                            fontWeight: FontWeight.w700,
+                            color: Colors.blue[900],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              )),
+        ),
+        Positioned(
+          top: 20.0,
+          right: 24.0,
+          child: Icon(
+            Icons.location_on_outlined,
+            size: 34.0,
+            color: Colors.grey,
+          ),
+        ),
+      ],
+    );
+  }
+}
